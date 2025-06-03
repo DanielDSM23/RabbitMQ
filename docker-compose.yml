@@ -20,7 +20,7 @@ services:
     working_dir: /app
     command: >
       sh -c "
-        sleep 10 &&
+        sleep 5 &&
         node producer.js
       "
     networks:
@@ -32,6 +32,7 @@ services:
       dockerfile: src/consumer/Dockerfile
     depends_on:
       - rabbitmq
+      - producer
     working_dir: /app
     command: >
       sh -c "
@@ -47,6 +48,7 @@ services:
       dockerfile: src/consumerAdd/Dockerfile
     depends_on:
       - rabbitmq
+      - producer
     working_dir: /app
     command: >
       sh -c "
@@ -62,6 +64,7 @@ services:
       dockerfile: src/consumerDivide/Dockerfile
     depends_on:
       - rabbitmq
+      - producer
     working_dir: /app
     command: >
       sh -c "
@@ -77,6 +80,7 @@ services:
       dockerfile: src/consumerMultiply/Dockerfile
     depends_on:
       - rabbitmq
+      - producer
     working_dir: /app
     command: >
       sh -c "
@@ -92,6 +96,7 @@ services:
       dockerfile: src/consumerSubstract/Dockerfile
     depends_on:
       - rabbitmq
+      - producer
     working_dir: /app
     command: >
       sh -c "

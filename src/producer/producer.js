@@ -2,7 +2,8 @@
 const amqplib = require('amqplib');
 
 const rabbitmq_url = 'amqp://user:password@rabbitmq:5672'; // Chaîne de connexion à RabbitMQ
-const queue = 'operationsQueue'; // Nom de la queue à utiliser
+const exchange = 'operations'; // Nom de la queue à utiliser
+const queue = "queueResult";
 
 // Fonction pour envoyer un message
 async function send(msg) {
@@ -11,30 +12,35 @@ async function send(msg) {
 
     // Créer un channel (connexion logique à RabbitMQ)
     const channel = await conn.createChannel();
-
-    // Vérifier que la queue existe (la créer sinon)
-    await channel.assertQueue(queue, { 
+    await channel.assertQueue(queue, {
+        durable : false
+    })
+    // creation de l'exchange 
+    await channel.assertExchange(exchange, "direct", {
         durable: false
-    });
+    })
 
     // Envoyer le message
-    channel.sendToQueue(
-        queue,
+    channel.publish(
+        exchange,
+        msg.operationType,
         Buffer.from(JSON.stringify(msg)), 
         {
             correlationId : Math.random().toString(), 
-            operation : "add" 
+            operation : msg.operationType 
         }
     );
 
-    console.log('[✓] Message envoyé');
+    console.log('[✓] Message envoyé', JSON.stringify(msg));
 }
 
 function getMessage() {
+    operationType = ["add", "sub", "mul", "div"];
+
     return {
         "n1": randomNumber(),
         "n2": randomNumber(),
-        "operationType": "add"
+        "operationType": operationType[Math.floor(Math.random() * (operationType.length))]
     }
 }
 

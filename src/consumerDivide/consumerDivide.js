@@ -2,9 +2,9 @@ const amqplib = require('amqplib');
 
 // const connectionString = "amqp://user:password@efrei20250602.hopto.org:5678";
 const connectionString = "amqp://user:password@rabbitmq:5672";
+const queueResult = "queueResult";
+const key = "div";
 let chann;
-const queueResult = 'queueResult';
-const operationsQueue = 'operationsQueue';
 
 async function connectRabbitMQServer(connectionString){
     const conn = await amqplib.connect(connectionString);
@@ -19,9 +19,11 @@ async function createChannel(connection){
 async function receive(){
     const rabbitServer = await connectRabbitMQServer(connectionString);
     chann = await createChannel(rabbitServer);
-    await chann.assertQueue(queueResult, {durable:false})
-    const opQueue = await chann.assertQueue(operationsQueue, {durable:false})
-    chann.consume(opQueue.queue, add, {noAck : true});
+    const { queue } = await chann.assertQueue("", {durable:false})
+    
+    chann.bindQueue(queue, "operations", key);
+
+    chann.consume(queue, add, {noAck : true});
 }
 
 function add(msg){
