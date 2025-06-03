@@ -18,17 +18,24 @@ async function send(msg) {
     });
 
     // Envoyer le message
-    channel.sendToQueue(queue, Buffer.from(JSON.stringify(msg)), 
-        { correlationId : Math.random().toString() , replyTo : queue.queue, operation: "add" });
+    channel.sendToQueue(
+        queue,
+        Buffer.from(JSON.stringify(msg)), 
+        {
+            correlationId : Math.random().toString(), 
+            operation : "add" 
+        }
+    );
 
     console.log('[✓] Message envoyé');
 }
 
 function getMessage() {
     return {
-    "n1": randomNumber(),
-    "n2": randomNumber()
-}
+        "n1": randomNumber(),
+        "n2": randomNumber(),
+        "operationType": "add"
+    }
 }
 
 function randomNumber() {
@@ -37,5 +44,5 @@ function randomNumber() {
 
 setInterval( () => {
     const message = getMessage();
-    send(message); // Appel de la fonction d'envoi    process.exit(0);
+    send(message);
 }, 5000)
