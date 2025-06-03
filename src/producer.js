@@ -4,11 +4,6 @@ const amqplib = require('amqplib');
 const rabbitmq_url = 'amqp://user:password@10.101.6.132:5672'; // Chaîne de connexion à RabbitMQ
 const queue = 'operationsQueue'; // Nom de la queue à utiliser
 
-const message = {
-    "n1": randomNumber(),
-    "n2": randomNumber()
-};
-
 // Fonction pour envoyer un message
 async function send(msg) {
     // Connexion à RabbitMQ
@@ -29,11 +24,18 @@ async function send(msg) {
     console.log('[✓] Message envoyé');
 }
 
+function getMessage() {
+    return {
+    "n1": randomNumber(),
+    "n2": randomNumber()
+}
+}
 
 function randomNumber() {
-    return Math.floor(Math.random() * 9) + 1;
+    return Math.floor(Math.random() * 100) + 1;
 }
 
 setInterval( () => {
+    const message = getMessage();
     send(message); // Appel de la fonction d'envoi    process.exit(0);
 }, 5000)
