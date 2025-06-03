@@ -1,7 +1,7 @@
 
 const amqp = require('amqplib');
 
-const url = "amqp://user:password@10.101.6.132:5672";
+const url = "amqp://user:password@rabbitmq:5672";
 const queue = "queueResult";
 
 async function receive() {

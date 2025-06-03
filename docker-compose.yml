@@ -1,0 +1,106 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"       # RabbitMQ broker
+      - "15672:15672"     # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    networks:
+      - app-network
+
+
+  producer:
+    build:
+      context: .
+      dockerfile: src/producer/Dockerfile
+    depends_on:
+      - rabbitmq
+    working_dir: /app
+    command: >
+      sh -c "
+        sleep 10 &&
+        node producer.js
+      "
+    networks:
+      - app-network
+    
+  consumer:
+    build:
+      context: .
+      dockerfile: src/consumer/Dockerfile
+    depends_on:
+      - rabbitmq
+    working_dir: /app
+    command: >
+      sh -c "
+        sleep 10 &&
+        node consumer.js
+      "
+    networks:
+      - app-network
+  
+  consumer-add:
+    build:
+      context: .
+      dockerfile: src/consumerAdd/Dockerfile
+    depends_on:
+      - rabbitmq
+    working_dir: /app
+    command: >
+      sh -c "
+        sleep 10 &&
+        node consumerAdd.js
+      "
+    networks:
+      - app-network
+
+  consumer-divide:
+    build:
+      context: .
+      dockerfile: src/consumerDivide/Dockerfile
+    depends_on:
+      - rabbitmq
+    working_dir: /app
+    command: >
+      sh -c "
+        sleep 10 &&
+        node consumerDivide.js
+      "
+    networks:
+      - app-network
+
+  consumer-multiply:
+    build:
+      context: .
+      dockerfile: src/consumerMultiply/Dockerfile
+    depends_on:
+      - rabbitmq
+    working_dir: /app
+    command: >
+      sh -c "
+        sleep 10 &&
+        node consumerMultiply.js
+      "
+    networks:
+      - app-network
+  
+  consumer-substract:
+    build:
+      context: .
+      dockerfile: src/consumerSubstract/Dockerfile
+    depends_on:
+      - rabbitmq
+    working_dir: /app
+    command: >
+      sh -c "
+        sleep 10 &&
+        node consumerSubstract.js
+      "
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

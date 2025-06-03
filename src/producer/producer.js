@@ -1,7 +1,7 @@
 // Chargement de la librairie AMQPLIB
 const amqplib = require('amqplib');
 
-const rabbitmq_url = 'amqp://user:password@10.101.6.132:5672'; // Chaîne de connexion à RabbitMQ
+const rabbitmq_url = 'amqp://user:password@rabbitmq:5672'; // Chaîne de connexion à RabbitMQ
 const queue = 'operationsQueue'; // Nom de la queue à utiliser
 
 // Fonction pour envoyer un message

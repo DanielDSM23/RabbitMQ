@@ -1,7 +1,7 @@
 const amqplib = require('amqplib');
 
 // const connectionString = "amqp://user:password@efrei20250602.hopto.org:5678";
-const connectionString = "amqp://user:password@10.101.6.132:5672";
+const connectionString = "amqp://user:password@rabbitmq:5672";
 let chann;
 const queueResult = 'queueResult';
 const operationsQueue = 'operationsQueue';
