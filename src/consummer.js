@@ -17,8 +17,8 @@ async function receive() {
 
 function consume(msg) {
    if (msg != null) {
-        const data = JSON.parse(msg.content.toString());
-        console.log(`Résultat reçu : ${data.n1} ${data.op} ${data.n2} = ${data.result}`);
+      const data = JSON.parse(msg.content.toString());
+      console.log(`Résultat reçu : ${data.n1} ${data.operationType} ${data.n2} = ${data.res}`);
    }
 }
 
