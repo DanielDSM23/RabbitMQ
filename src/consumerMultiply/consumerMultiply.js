@@ -4,6 +4,8 @@ const amqplib = require('amqplib');
 const connectionString = "amqp://user:password@rabbitmq:5672";
 const queueResult = "queueResult";
 const key = "mul";
+const exchangeDirect = "operations";
+const exchangeFanout = "all";
 let chann;
 
 async function connectRabbitMQServer(connectionString){
@@ -20,19 +22,22 @@ async function receive(){
     const rabbitServer = await connectRabbitMQServer(connectionString);
     chann = await createChannel(rabbitServer);
     const { queue } = await chann.assertQueue("", {durable:false})
-    
-    chann.bindQueue(queue, "operations", key);
+    await chann.assertExchange(exchangeDirect, "direct", {
+        durable: false
+    })
+    chann.bindQueue(queue, exchangeDirect, key);
+    await chann.assertExchange(exchangeFanout, "fanout",{durable:false});
+    chann.bindQueue(queue, exchangeFanout, "");
 
     chann.consume(queue, add, {noAck : true});
 }
 
 function add(msg){
     if(msg != null){
-        console.log(`Message reçu : ${msg.content.toString()}`);
         const operationData = JSON.parse(msg.content);
         const result = operationData.n1 * operationData.n2;
         const opType = msg.properties.operation;
-        console.table(msg.properties);
+        
         const correlationId = msg.properties.correlationId;
 
         let dataToSend = {
@@ -40,7 +45,6 @@ function add(msg){
             op: opType, 
             res: result
         };
-        console.log(`Message reçu : ${JSON.stringify(dataToSend)}`);
         chann.sendToQueue(queueResult, Buffer.from(JSON.stringify(dataToSend)), {correlationId});
     }
 }

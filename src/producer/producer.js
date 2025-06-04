@@ -21,16 +21,15 @@ async function send(msg) {
         durable: false
     })
 
-    await channel.assertExchange(exchangeFanout, 'fanout', { durable: false })
-
+    
     if (msg.operationType === "all") {
+        await channel.assertExchange(exchangeFanout, 'fanout', { durable: false })
         channel.publish(
-            exchange,
+            exchangeFanout,
             '',
             Buffer.from(JSON.stringify(msg)),
             {
                 correlationId : Math.random().toString(),
-                operation : msg.operationType
             }
         )
     } else {
@@ -41,7 +40,6 @@ async function send(msg) {
             Buffer.from(JSON.stringify(msg)),
             {
                 correlationId : Math.random().toString(),
-                operation : msg.operationType
             }
         );
     }
