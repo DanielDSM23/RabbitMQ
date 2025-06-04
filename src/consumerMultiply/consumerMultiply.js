@@ -21,7 +21,7 @@ async function createChannel(connection){
 async function receive(){
     const rabbitServer = await connectRabbitMQServer(connectionString);
     chann = await createChannel(rabbitServer);
-    const { queue } = await chann.assertQueue("", {durable:false})
+    const { queue } = await chann.assertQueue("", {durable:false,exclusive: true})
     await chann.assertExchange(exchangeDirect, "direct", {
         durable: false
     })
